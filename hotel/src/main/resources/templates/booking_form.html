@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Form</title>
+  <style>
+    :root {
+      --navy: #1a2148;
+      --blue: #5b6fd8;
+      --purple: #8b6fd8;
+      --text-sub: #6b7280;
+      --placeholder: #9aa3b5;
+      --border: rgba(0,0,0,0.07);
+      --field-bg: rgba(255,255,255,0.6);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--navy);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      position: relative;
+      overflow-x: hidden;
+      background:
+              radial-gradient(circle at 90% 6%, rgba(255,200,220,0.5), transparent 30%),
+              radial-gradient(circle at 96% 30%, rgba(200,170,255,0.4), transparent 32%),
+              radial-gradient(circle at 4% 90%, rgba(150,180,255,0.5), transparent 34%),
+              radial-gradient(circle at 92% 92%, rgba(255,210,220,0.4), transparent 34%),
+              linear-gradient(150deg, #dbe2f6 0%, #e1e0f4 50%, #dee5f7 100%);
+    }
+
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .orb1 { width: 240px; height: 240px; left: -70px; top: 30%; background: radial-gradient(circle at 30% 30%, rgba(150,180,255,0.5), rgba(150,180,255,0.05)); }
+    .orb2 { width: 200px; height: 200px; right: 4%; top: -60px; background: radial-gradient(circle at 30% 30%, rgba(255,190,210,0.5), rgba(255,190,210,0.05)); }
+    .orb3 { width: 260px; height: 260px; right: -80px; bottom: -70px; background: radial-gradient(circle at 30% 30%, rgba(190,160,255,0.4), rgba(190,160,255,0.05)); }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 1366px;
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 32px;
+      box-shadow: 0 30px 70px -25px rgba(30,40,80,0.22);
+      padding: 44px 56px 36px;
+    }
+
+    /* HEADER */
+    .header-row {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      margin-bottom: 32px;
+    }
+
+    .header-icon {
+      width: 76px; height: 76px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.75);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 8px 18px rgba(30,40,80,0.08);
+    }
+    .header-icon svg { width: 32px; height: 32px; color: var(--blue); }
+
+    h1.title {
+      font-size: 34px;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -0.01em;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: var(--text-sub);
+    }
+
+    /* PANELS */
+    .panel {
+      background: rgba(255,255,255,0.4);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 26px 32px 30px;
+      margin-bottom: 20px;
+    }
+
+    .panel-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--navy);
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 22px;
+    }
+    .field-row.cols-3 { grid-template-columns: repeat(3, 1fr); position: relative; }
+    .field-row.cols-5 { grid-template-columns: repeat(5, 1fr); }
+
+    .field label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 10px;
+    }
+
+    .field-input {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--field-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 13px 16px;
+    }
+
+    .field-input .icon {
+      width: 19px; height: 19px;
+      color: var(--blue);
+      flex-shrink: 0;
+      display: flex;
+    }
+    .field-input .icon svg { width: 100%; height: 100%; }
+
+    .field-input input,
+    .field-input select {
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 14.5px;
+      color: var(--navy);
+      width: 100%;
+      font-family: inherit;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .field-input input::placeholder { color: var(--placeholder); }
+    .field-input select { color: var(--placeholder); cursor: pointer; }
+    .field-input input:disabled { color: var(--placeholder); cursor: not-allowed; }
+
+    .field-input .chevron {
+      width: 15px; height: 15px;
+      color: var(--text-sub);
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+
+    .divider-v {
+      position: absolute;
+      left: 33.33%;
+      top: 34px;
+      bottom: 0;
+      width: 1px;
+      background: rgba(0,0,0,0.08);
+    }
+    .divider-v2 {
+      position: absolute;
+      left: 66.66%;
+      top: 34px;
+      bottom: 0;
+      width: 1px;
+      background: rgba(0,0,0,0.08);
+    }
+
+    /* FOOTER */
+    .footer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .secure-note {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--text-sub);
+    }
+    .secure-note svg { width: 18px; height: 18px; color: var(--blue); }
+
+    .footer-actions {
+      display: flex;
+      gap: 14px;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 14px 28px;
+      border-radius: 14px;
+      font-size: 14.5px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+    }
+    .btn svg { width: 17px; height: 17px; }
+
+    .btn-reset {
+      background: rgba(255,255,255,0.7);
+      color: var(--blue);
+      border: 1px solid rgba(255,255,255,0.8);
+    }
+    .btn-reset:hover { background: rgba(255,255,255,0.9); }
+
+    .btn-confirm {
+      background: linear-gradient(120deg, var(--blue) 0%, var(--purple) 100%);
+      color: #fff;
+      box-shadow: 0 14px 26px -10px rgba(100,100,220,0.5);
+    }
+    .btn-confirm:hover { filter: brightness(1.04); }
+
+    @media (max-width: 1024px) {
+      .field-row, .field-row.cols-3, .field-row.cols-5 { grid-template-columns: repeat(2, 1fr); }
+      .divider-v, .divider-v2 { display: none; }
+    }
+
+    @media (max-width: 640px) {
+      .card { padding: 30px 22px 26px; border-radius: 24px; }
+      .panel { padding: 22px 18px 26px; }
+      .header-row { flex-direction: column; align-items: flex-start; gap: 14px; }
+      h1.title { font-size: 26px; }
+      .field-row, .field-row.cols-3, .field-row.cols-5 { grid-template-columns: 1fr; }
+      .footer-row { flex-direction: column; align-items: stretch; }
+      .footer-actions { flex-direction: column; }
+      .btn { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<div class="card">
+
+  <div class="header-row">
+    <div class="header-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9 15l2 2 4-4"/></svg>
+    </div>
+    <div>
+      <h1 class="title">Booking Form</h1>
+      <p class="subtitle">Fill in the details below to book your stay.</p>
+    </div>
+  </div>
+
+  <form th:action="@{/booking/add}" th:object="${booking}" method="post">
+
+    <!-- BOOKING DETAILS -->
+    <div class="panel">
+      <div class="panel-title">Booking Details</div>
+
+      <div class="field-row cols-5">
+        <div class="field">
+          <label>Guest</label>
+          <div class="field-input">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+            <select th:field="*{guest.guestId}" required>
+              <option value="" selected="selected" disabled="disabled">Select guest</option>
+              <option th:each="g : ${guests}" th:value="${g.guestId}" th:text="${g.guestName}"></option>
+
+
+            </select>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+
+          <p th:if="${#lists.isEmpty(guests)}" style="margin-top:8px; font-size:13px; color:var(--text-sub);">
+            No guests yet — <a th:href="@{/guest/add}" style="color:var(--blue); font-weight:600;">add one first</a>.
+          </p>
+        </div>
+
+
+
+        <div class="field">
+          <label>Floor</label>
+          <div class="field-input">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="1"/><path d="M9 6h1M14 6h1M9 10h1M14 10h1M9 14h1M14 14h1M9 22v-4h6v4"/></svg></span>
+            <input type="text" th:field="*{floor}" placeholder="Enter floor">
+          </div>
+        </div>
+
+
+        <div class="field">
+          <label>Room Number</label>
+          <div class="field-input">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="1"/><path d="M10 12h.01"/></svg></span>
+            <input type="text" th:field="*{room}" placeholder="Enter room number">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Check In</label>
+          <div class="field-input">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9 15l2 2 4-4"/></svg></span>
+            <input type="date" th:field="*{checkInDate}" placeholder="select date">
+          </div>
+        </div>
+
+
+        <div class="field">
+          <label>Check Out</label>
+          <div class="field-input">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9 15l2 2 4-4"/></svg></span>
+            <input type="date" th:field="*{checkOutDate}" placeholder="select date">
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- STAY DETAILS -->
+    <div class="panel">
+      <div class="panel-title">Stay Details</div>
+
+      <div class="field-row cols-3">
+        <span class="divider-v"></span>
+        <span class="divider-v2"></span>
+
+        <div class="field">
+          <label>Days</label>
+          <div class="field-input">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span>
+            <input type="text" th:field="*{daysStays}" placeholder="Auto calculated" readonly="readonly">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Amount</label>
+          <div class="field-input">
+    <span class="icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="2" y="6" width="20" height="14" rx="2"/>
+        <path d="M2 10h20"/>
+        <path d="M17 15h1"/>
+      </svg>
+    </span>
+            <input type="text" id="amount" th:field="*{price}" placeholder="Per day 2000 taka" readonly>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Payment Status</label>
+          <div class="field-input">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M17 15h1"/></svg></span>
+            <select th:field="*{paymentStatus}">
+              <option value="" selected="selected" disabled="disabled">Select status</option>
+              <option value="Paid">Paid</option>
+              <option value="Pending">Pending</option>
+              <option value="Partially Paid">Partially Paid</option>
+            </select>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <!-- FOOTER -->
+    <div class="footer-row">
+      <div class="secure-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+        Your information is secure and protected.
+      </div>
+
+      <div class="footer-actions">
+        <button type="submit" class="btn btn-confirm"   onclick="alert('Booking confirmed successfully!')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg>
+          Confirm Booking
+        </button>
+      </div>
+    </div>
+
+  </form>
+
+</div>
+
+</body>
+
+
+
+
+
+
+<script>
+  const checkIn = document.getElementById("checkInDate");
+  const checkOut = document.getElementById("checkOutDate");
+  const stayDays = document.getElementById("daysStays");
+  const amount = document.getElementById("amount");
+
+  const PRICE_PER_DAY = 2000;
+
+  // Today's date
+  const today = new Date().toISOString().split("T")[0];
+  checkIn.min = today;
+  checkOut.min = today;
+
+  function calculateStay() {
+    if (!checkIn.value || !checkOut.value) {
+      stayDays.value = "";
+      amount.value = "";
+      return;
+    }
+
+    const inDate = new Date(checkIn.value);
+    const outDate = new Date(checkOut.value);
+
+    const diffDays = Math.floor(
+            (outDate - inDate) / (1000 * 60 * 60 * 24)
+    );
+
+    if (diffDays < 0) {
+      stayDays.value = "";
+      amount.value = "";
+      return;
+    }
+
+    // Same day = 1, otherwise actual difference
+    const billableDays = (diffDays === 0) ? 1 : diffDays;
+
+    stayDays.value = billableDays;
+    amount.value = billableDays * PRICE_PER_DAY;
+  }
+
+  checkIn.addEventListener("change", function () {
+    checkOut.min = this.value;
+
+    if (checkOut.value && checkOut.value < this.value) {
+      checkOut.value = "";
+    }
+
+    calculateStay();
+  });
+
+  checkOut.addEventListener("change", calculateStay);
+</script>
+
+
+</html>

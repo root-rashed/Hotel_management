@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome Back — Login</title>
+<style>
+  :root {
+    --navy: #1a2148;
+    --blue: #4f5fe0;
+    --purple: #8b3fd8;
+    --text-sub: #6b7280;
+    --placeholder: #9aa3b5;
+    --border: rgba(0,0,0,0.07);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--navy);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    position: relative;
+    overflow-x: hidden;
+    background:
+      radial-gradient(circle at 92% 4%, rgba(255,190,215,0.55), transparent 28%),
+      radial-gradient(circle at 100% 20%, rgba(210,175,255,0.5), transparent 30%),
+      radial-gradient(circle at 2% 55%, rgba(160,190,255,0.4), transparent 32%),
+      radial-gradient(circle at 90% 85%, rgba(255,210,225,0.35), transparent 30%),
+      radial-gradient(circle at 6% 92%, rgba(180,200,255,0.4), transparent 30%),
+      linear-gradient(150deg, #dde4f7 0%, #e2e1f5 50%, #dfe6f8 100%);
+  }
+
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+  }
+  .orb1 { width: 90px; height: 90px; left: 4%; top: 60%; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), rgba(255,255,255,0.05)); }
+  .orb2 { width: 70px; height: 70px; left: 3%; top: 92%; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), rgba(255,255,255,0.05)); }
+  .orb3 { width: 130px; height: 130px; right: 8%; top: 4%; background: radial-gradient(circle at 30% 30%, rgba(255,190,215,0.75), rgba(255,190,215,0.05)); }
+  .orb4 { width: 110px; height: 110px; right: 10%; top: 22%; background: radial-gradient(circle at 30% 30%, rgba(210,175,255,0.6), rgba(210,175,255,0.05)); }
+  .orb5 { width: 100px; height: 100px; right: 6%; bottom: 12%; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.85), rgba(255,255,255,0.05)); }
+
+  .card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 480px;
+    background: rgba(255,255,255,0.5);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid rgba(255,255,255,0.7);
+    border-radius: 30px;
+    box-shadow: 0 30px 70px -25px rgba(30,40,80,0.22);
+    padding: 44px 40px 36px;
+  }
+
+  .icon-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .icon-circle {
+    width: 82px; height: 82px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.75);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 18px rgba(30,40,80,0.08);
+  }
+  .icon-circle svg { width: 38px; height: 38px; color: var(--blue); }
+
+  h1.title {
+    text-align: center;
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--navy);
+    letter-spacing: -0.01em;
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    text-align: center;
+    font-size: 15.5px;
+    color: var(--text-sub);
+    margin-bottom: 28px;
+  }
+
+  .form-panel {
+    background: rgba(255,255,255,0.4);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 26px 26px 30px;
+  }
+
+  .field { margin-bottom: 20px; }
+  .field:last-of-type { margin-bottom: 26px; }
+
+  .field label {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 10px;
+  }
+
+  .field-input {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255,255,255,0.65);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 18px;
+  }
+
+  .field-input .icon {
+    width: 19px; height: 19px;
+    color: var(--blue);
+    flex-shrink: 0;
+    display: flex;
+  }
+  .field-input .icon svg { width: 100%; height: 100%; }
+
+  .field-input input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 15px;
+    color: var(--navy);
+    width: 100%;
+    font-family: inherit;
+  }
+  .field-input input::placeholder { color: var(--placeholder); }
+
+  .toggle-eye {
+    background: none;
+    border: none;
+    padding: 0;
+    display: flex;
+    cursor: pointer;
+    color: var(--text-sub);
+    flex-shrink: 0;
+  }
+  .toggle-eye svg { width: 19px; height: 19px; }
+
+  .login-btn {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 16px;
+    background: linear-gradient(90deg, #4f5fe0 0%, #8b3fd8 100%);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 16px 30px -12px rgba(90,70,220,0.5);
+  }
+  .login-btn:hover { filter: brightness(1.04); }
+
+  .signup-text {
+    text-align: center;
+    font-size: 14.5px;
+    color: #3d4560;
+    margin-top: 22px;
+  }
+  .signup-text a {
+    color: var(--blue);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .signup-text a:hover { text-decoration: underline; }
+
+  @media (max-width: 480px) {
+    .card { padding: 34px 24px 28px; border-radius: 24px; }
+    .form-panel { padding: 20px 18px 24px; }
+    h1.title { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+<div class="orb orb4"></div>
+<div class="orb orb5"></div>
+
+<div class="card">
+
+  <div class="icon-wrap">
+    <div class="icon-circle">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </div>
+  </div>
+
+  <h1 class="title">Welcome Back</h1>
+  <p class="subtitle">Please login to your account</p>
+
+  <div class="form-panel">
+    <div class="field">
+      <label>Email or Username</label>
+      <div class="field-input">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+        <input type="text" placeholder="Enter email or username">
+      </div>
+    </div>
+
+
+    <div class="field">
+      <label>Password</label>
+      <div class="field-input">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></span>
+        <input type="password" placeholder="Enter your password">
+        <button class="toggle-eye" aria-label="Show password">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <button class="login-btn">Login</button>
+  </div>
+
+  <p class="signup-text">Don't have an account? <a href="/register/new">Sign Up</a></p>
+
+</div>
+
+</body>
+</html>

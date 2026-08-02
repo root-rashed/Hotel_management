@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guest Information</title>
+  <style>
+    :root {
+      --navy: #1a2148;
+      --blue: #5b6fd8;
+      --purple: #8b6fd8;
+      --text-sub: #6b7280;
+      --placeholder: #9aa3b5;
+      --border: rgba(0,0,0,0.07);
+      --field-bg: rgba(255,255,255,0.6);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--navy);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      position: relative;
+      overflow-x: hidden;
+      background:
+              radial-gradient(circle at 88% 4%, rgba(255,200,220,0.55), transparent 30%),
+              radial-gradient(circle at 78% 30%, rgba(200,170,255,0.35), transparent 32%),
+              radial-gradient(circle at 4% 90%, rgba(150,180,255,0.5), transparent 34%),
+              radial-gradient(circle at 92% 92%, rgba(190,210,255,0.5), transparent 34%),
+              linear-gradient(150deg, #dce3f7 0%, #e2e2f6 50%, #dfe6f8 100%);
+    }
+
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .orb1 { width: 260px; height: 260px; left: -70px; bottom: -60px; background: radial-gradient(circle at 30% 30%, rgba(150,180,255,0.55), rgba(150,180,255,0.05)); }
+    .orb2 { width: 180px; height: 180px; right: 6%; top: -60px; background: radial-gradient(circle at 30% 30%, rgba(255,190,210,0.55), rgba(255,190,210,0.05)); }
+    .orb3 { width: 90px; height: 90px; left: 3%; bottom: 8%; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(255,255,255,0.05)); }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 1366px;
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 32px;
+      box-shadow: 0 30px 70px -25px rgba(30,40,80,0.22);
+      padding: 44px 56px 40px;
+    }
+
+    /* HEADER */
+    .header-row {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      margin-bottom: 32px;
+    }
+
+    .header-icon {
+      width: 76px; height: 76px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.75);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 8px 18px rgba(30,40,80,0.08);
+    }
+    .header-icon svg { width: 34px; height: 34px; color: var(--blue); }
+
+    h1.title {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -0.01em;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: var(--text-sub);
+    }
+
+    /* FORM PANEL */
+    .form-panel {
+      background: rgba(255,255,255,0.4);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 30px 34px 34px;
+    }
+
+    .section {
+      padding-bottom: 26px;
+      margin-bottom: 26px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .step-num {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue) 0%, var(--purple) 100%);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .section-head h2 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 22px;
+    }
+    .field-row.cols-3 { grid-template-columns: repeat(3, 1fr); }
+
+    .field label {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .field-input {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--field-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 16px;
+    }
+
+    .field-input .icon {
+      width: 18px; height: 18px;
+      color: var(--blue);
+      flex-shrink: 0;
+      display: flex;
+    }
+    .field-input .icon svg { width: 100%; height: 100%; }
+
+    .field-input input,
+    .field-input select {
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 14.5px;
+      color: var(--navy);
+      width: 100%;
+      font-family: inherit;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .field-input input::placeholder { color: var(--placeholder); }
+    .field-input select { color: var(--placeholder); cursor: pointer; }
+    .field-input select:invalid { color: var(--placeholder); }
+
+    .field-input .chevron {
+      width: 15px; height: 15px;
+      color: var(--text-sub);
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+
+    /* ACTIONS */
+    .actions-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 14px;
+      margin-top: 34px;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 14px 28px;
+      border-radius: 14px;
+      font-size: 14.5px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+    }
+    .btn svg { width: 17px; height: 17px; }
+
+    .btn-cancel {
+      background: rgba(255,255,255,0.7);
+      color: var(--navy);
+      border: 1px solid rgba(255,255,255,0.8);
+    }
+    .btn-cancel:hover { background: rgba(255,255,255,0.9); }
+
+    .btn-save {
+      background: linear-gradient(120deg, var(--blue) 0%, var(--purple) 100%);
+      color: #fff;
+      box-shadow: 0 14px 26px -10px rgba(100,100,220,0.5);
+    }
+    .btn-save:hover { filter: brightness(1.04); }
+
+    @media (max-width: 1024px) {
+      .field-row, .field-row.cols-3 { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 640px) {
+      .card { padding: 30px 22px 26px; border-radius: 24px; }
+      .form-panel { padding: 22px 18px 26px; }
+      .header-row { flex-direction: column; align-items: flex-start; gap: 14px; }
+      h1.title { font-size: 24px; }
+      .field-row, .field-row.cols-3 { grid-template-columns: 1fr; }
+      .actions-row { flex-direction: column-reverse; }
+      .btn { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<div class="card">
+
+  <div class="header-row">
+    <div class="header-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="4"/><path d="M2 21v-1a6 6 0 016-6h2M18 14v4M16 16h4"/></svg>
+    </div>
+    <div>
+      <h1 class="title">Guest Information</h1>
+      <p class="subtitle">Please provide the details of the guests who will be staying.</p>
+    </div>
+  </div>
+
+  <form th:action="@{/guest/add}" th:object="${guest}" method="post">
+
+    <div class="form-panel">
+
+      <!-- SECTION 1 -->
+      <div class="section">
+        <div class="section-head">
+          <span class="step-num">1</span>
+          <h2>Guest Details</h2>
+        </div>
+
+        <div class="field-row cols-3">
+          <div class="field">
+            <label>Name</label>
+            <div class="field-input">
+              <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+              <input type="text" th:field="*{guestName}" placeholder="Enter guest name">
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Email</label>
+            <div class="field-input">
+              <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg></span>
+              <input type="email" th:field="*{guestEmail}" placeholder="Enter email address">
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Mobile</label>
+            <div class="field-input">
+              <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.68 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.32 1.85.55 2.81.68A2 2 0 0122 16.92z"/></svg></span>
+              <input type="tel" th:field="*{guestPhone}" placeholder="Enter mobile number">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 2 -->
+      <div class="section">
+        <div class="section-head">
+          <span class="step-num">2</span>
+          <h2>Passport Information</h2>
+        </div>
+
+        <div class="field-row cols-3">
+          <div class="field">
+            <label>Passport Number</label>
+            <div class="field-input">
+              <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg></span>
+              <input type="text" th:field="*{passport.passportNumber}" placeholder="Enter passport number">
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Issuing Country</label>
+            <div class="field-input">
+              <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20 15.3 15.3 0 010-20z"/></svg></span>
+              <select th:field="*{passport.country}">
+                <option value="" selected="selected" disabled="disabled">Select country</option>
+                <option value="Bangladesh">Bangladesh</option>
+                <option value="United States">United States</option>
+                <option value="United Kingdom">United Kingdom</option>
+                <option value="Germany">Germany</option>
+                <option value="India">India</option>
+              </select>
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Expiry Date</label>
+            <div class="field-input">
+              <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
+              <input type="date" th:field="*{passport.expirationDate}" placeholder="Select expiry date" min="">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 3 -->
+      <div class="section">
+        <div class="section-head">
+          <span class="step-num">3</span>
+          <h2>Additional Information</h2>
+        </div>
+
+        <div class="field-row cols-3">
+          <div class="field">
+            <label>Special Requests</label>
+            <div class="field-input">
+              <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg></span>
+              <input type="text" th:field="*{specialRequest}" placeholder="Enter special Requests">
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="actions-row">
+      <button type="submit" class="btn btn-save"   onclick="alert('Guest Information Saved successfully!')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6L9 17l-5-5"/></svg>
+        Save Guest
+      </button>
+    </div>
+
+  </form>
+
+</div>
+
+</body>
+
+
+
+
+<script>
+  document.querySelector('input[name="passport.expirationDate"]').min = new Date().toISOString().split("T")[0];
+</script>
+</html>
