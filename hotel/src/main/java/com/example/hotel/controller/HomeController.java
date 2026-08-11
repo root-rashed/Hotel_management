@@ -1,8 +1,6 @@
 package com.example.hotel.controller;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class HomeController {
@@ -12,10 +10,15 @@ public class HomeController {
         return "index";
     }
 
-
-
     @GetMapping("/error")
     public String Error() {
         return "error";
     }
+
+    public record UserDto(String name, String email,String phone, String password) {}
+
+
+
+
+
 }

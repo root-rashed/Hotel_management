@@ -1,17 +1,17 @@
 package com.example.hotel.controller;
 
-
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+
 @Controller
-@RequestMapping("/registration")
-public class RegistrationController {
+public class AdminController {
 
-    @GetMapping("/new")
-    public String newPage() {
-        return "registration";
+
+    @GetMapping("/admin")
+    public String dashboard() {
+        return "admin";
     }
-
 }

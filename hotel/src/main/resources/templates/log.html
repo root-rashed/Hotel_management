@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glassmorphism Login</title>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, Helvetica, sans-serif;
+        }
+
+        body{
+            height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background:linear-gradient(-45deg,#4158D0,#C850C0,#FFCC70,#00DBDE);
+            background-size:400% 400%;
+            animation:bg 12s ease infinite;
+        }
+
+        @keyframes bg{
+            0%{background-position:0% 50%;}
+            50%{background-position:100% 50%;}
+            100%{background-position:0% 50%;}
+        }
+
+        .login-box{
+            width:360px;
+            padding:40px;
+            border-radius:25px;
+            background:rgba(255,255,255,0.15);
+            backdrop-filter:blur(18px);
+            -webkit-backdrop-filter:blur(18px);
+            border:1px solid rgba(255,255,255,.25);
+            box-shadow:
+                    0 8px 32px rgba(0,0,0,.25),
+                    inset 0 0 1px rgba(255,255,255,.5);
+        }
+
+        .login-box h1{
+            text-align:center;
+            color:white;
+            margin-bottom:30px;
+            font-weight:600;
+            letter-spacing:1px;
+        }
+
+        .input-group{
+            margin-bottom:20px;
+        }
+
+        .input-group label{
+            display:block;
+            color:white;
+            margin-bottom:8px;
+            font-size:15px;
+        }
+
+        .input-group input{
+            width:100%;
+            padding:14px 16px;
+            border:none;
+            outline:none;
+            border-radius:12px;
+            background:rgba(255,255,255,.12);
+            color:white;
+            border:1px solid rgba(255,255,255,.25);
+            transition:.3s;
+        }
+
+        .input-group input::placeholder{
+            color:rgba(255,255,255,.75);
+        }
+
+        .input-group input:focus{
+            background:rgba(255,255,255,.2);
+            border:1px solid rgba(255,255,255,.6);
+            box-shadow:0 0 15px rgba(255,255,255,.25);
+        }
+
+        button{
+            width:100%;
+            padding:14px;
+            border:none;
+            border-radius:12px;
+            background:rgba(255,255,255,.25);
+            color:white;
+            font-size:16px;
+            font-weight:bold;
+            cursor:pointer;
+            backdrop-filter:blur(10px);
+            transition:.3s;
+        }
+
+        button:hover{
+            background:white;
+            color:#333;
+            transform:translateY(-2px);
+            box-shadow:0 8px 20px rgba(255,255,255,.3);
+        }
+
+        .footer{
+            text-align:center;
+            margin-top:20px;
+            color:white;
+            font-size:14px;
+        }
+
+        .footer a{
+            color:white;
+            text-decoration:none;
+            font-weight:bold;
+        }
+
+        .footer a:hover{
+            text-decoration:underline;
+        }
+
+        .message{
+            text-align:center;
+            margin-bottom:20px;
+            font-size:14px;
+            font-weight:bold;
+        }
+
+        .error{
+            color:#ffb3b3;
+        }
+
+        .success{
+            color:#b8ffb8;
+        }
+    </style>
+
+</head>
+<body>
+
+
+
+
+
+
+
+<form th:action="@{/dashboard}" method="post">
+
+    <!-- CSRF Token (Spring Security) -->
+    <input type="hidden"
+           th:name="${_csrf.parameterName}"
+           th:value="${_csrf.token}" />
+
+    <div class="login-box">
+        <!-- Login Error -->
+        <div th:if="${param.error}" class="message error">
+            Invalid username or password!
+        </div>
+
+        <!-- Logout Success -->
+        <div th:if="${param.logout}" class="message success">
+            You have been logged out successfully.
+        </div>
+
+
+
+
+        <h1>Welcome Back</h1>
+
+        <div class="input-group">
+            <label for="username">Username</label>
+            <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Enter your username"
+                    required>
+        </div>
+
+        <div class="input-group">
+            <label for="password">Password</label>
+            <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    required>
+        </div>
+
+        <button type="submit">Log In</button>
+
+        <div class="footer">
+            Don't have an account?
+            <a th:href="@{/register/new}">Sign Up</a>
+        </div>
+
+    </div>
+</form>
+
+
+
+
+
+
+</body>
+</html>
