@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelStay Admin Panel</title>
+    <style>
+        :root{
+            --purple:#6c5ce7;
+            --purple-light:#efeafe;
+            --blue:#3b82f6;
+            --blue-light:#e7f0ff;
+            --green:#16a34a;
+            --green-light:#e7f9ee;
+            --orange:#f59e0b;
+            --orange-light:#fff3e0;
+            --pink:#ec4899;
+            --pink-light:#fde7f3;
+            --red:#ef4444;
+            --red-light:#fdeaea;
+            --bg:#f5f6fb;
+            --card:#ffffff;
+            --border:#eceef4;
+            --text-dark:#1f2233;
+            --text-mid:#6b7280;
+            --text-light:#9aa1b1;
+            --sidebar-w:248px;
+        }
+        *{box-sizing:border-box;margin:0;padding:0;}
+        body{
+            font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+            background:var(--bg);
+            color:var(--text-dark);
+            font-size:14px;
+            -webkit-font-smoothing:antialiased;
+        }
+        a{text-decoration:none;color:inherit;}
+        ul{list-style:none;}
+
+        /* ===== Layout ===== */
+        .app{
+            display:flex;
+            min-height:100vh;
+        }
+
+        /* ===== Sidebar ===== */
+        .sidebar{
+            width:var(--sidebar-w);
+            background:#fff;
+            border-right:1px solid var(--border);
+            position:fixed;
+            top:0;left:0;bottom:0;
+            display:flex;
+            flex-direction:column;
+            padding:20px 14px;
+            overflow-y:auto;
+        }
+        .brand{
+            display:flex;
+            align-items:center;
+            gap:12px;
+            padding:4px 8px 22px 8px;
+        }
+        .brand-icon{
+            width:38px;height:38px;
+            border-radius:10px;
+            background:linear-gradient(135deg,#8b7cf6,#6c5ce7);
+            display:flex;align-items:center;justify-content:center;
+            color:#fff;
+            flex-shrink:0;
+        }
+        .brand-name{
+            font-size:15px;
+            font-weight:700;
+            color:var(--text-dark);
+            line-height:1.2;
+        }
+        .brand-sub{
+            font-size:11.5px;
+            color:var(--text-light);
+        }
+        .nav-section-title{
+            font-size:10.5px;
+            font-weight:700;
+            letter-spacing:.06em;
+            color:var(--text-light);
+            padding:14px 10px 6px 10px;
+        }
+        .nav-item{
+            display:flex;
+            align-items:center;
+            gap:11px;
+            padding:9px 10px;
+            border-radius:9px;
+            color:var(--text-mid);
+            font-size:13.5px;
+            font-weight:500;
+            cursor:pointer;
+            margin-bottom:2px;
+            transition:background .15s;
+        }
+        .nav-item svg{flex-shrink:0;}
+        .nav-item:hover{background:#f5f5fa;}
+        .nav-item.active{
+            background:var(--purple-light);
+            color:var(--purple);
+            font-weight:600;
+        }
+        .sidebar-help{
+            margin-top:auto;
+            background:#f7f6ff;
+            border-radius:14px;
+            padding:16px;
+            text-align:left;
+        }
+        .sidebar-help-icon{
+            width:34px;height:34px;
+            border-radius:9px;
+            background:#e7e2ff;
+            display:flex;align-items:center;justify-content:center;
+            color:var(--purple);
+            margin-bottom:10px;
+        }
+        .sidebar-help-title{font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:2px;}
+        .sidebar-help-sub{font-size:12px;color:var(--text-light);margin-bottom:12px;}
+        .btn-support{
+            display:block;
+            width:100%;
+            text-align:center;
+            background:var(--purple);
+            color:#fff;
+            border:none;
+            padding:9px 0;
+            border-radius:9px;
+            font-size:13px;
+            font-weight:600;
+            cursor:pointer;
+        }
+
+        /* ===== Main ===== */
+        .main{
+            margin-left:var(--sidebar-w);
+            flex:1;
+            display:flex;
+            flex-direction:column;
+            min-width:0;
+        }
+
+        /* ===== Topbar ===== */
+        .topbar{
+            height:72px;
+            background:#fff;
+            border-bottom:1px solid var(--border);
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            padding:0 28px;
+            position:sticky;
+            top:0;
+            z-index:10;
+        }
+        .search-box{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            background:var(--bg);
+            border-radius:10px;
+            padding:9px 14px;
+            width:360px;
+            color:var(--text-light);
+        }
+        .search-box input{
+            border:none;background:transparent;outline:none;flex:1;font-size:13.5px;color:var(--text-dark);
+        }
+        .search-box kbd{
+            font-size:11px;
+            background:#fff;
+            border:1px solid var(--border);
+            border-radius:5px;
+            padding:2px 6px;
+            color:var(--text-light);
+        }
+        .topbar-right{
+            display:flex;
+            align-items:center;
+            gap:20px;
+        }
+        .icon-btn{
+            width:38px;height:38px;
+            border-radius:10px;
+            display:flex;align-items:center;justify-content:center;
+            background:var(--bg);
+            color:var(--text-mid);
+            cursor:pointer;
+            position:relative;
+        }
+        .badge{
+            position:absolute;
+            top:-4px;right:-4px;
+            background:var(--red);
+            color:#fff;
+            font-size:10px;
+            font-weight:700;
+            width:17px;height:17px;
+            border-radius:50%;
+            display:flex;align-items:center;justify-content:center;
+            border:2px solid #fff;
+        }
+        .user-chip{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            cursor:pointer;
+        }
+        .user-avatar{
+            width:38px;height:38px;
+            border-radius:50%;
+            object-fit:cover;
+        }
+        .user-name{font-size:13.5px;font-weight:600;color:var(--text-dark);line-height:1.3;}
+        .user-role{font-size:11.5px;color:var(--text-light);}
+
+        /* ===== Content ===== */
+        .content{
+            padding:26px 28px 40px 28px;
+        }
+        .page-header{
+            display:flex;
+            justify-content:space-between;
+            align-items:flex-start;
+            margin-bottom:22px;
+            flex-wrap:wrap;
+            gap:14px;
+        }
+        .page-title{
+            font-size:24px;
+            font-weight:700;
+            color:var(--text-dark);
+            margin-bottom:4px;
+        }
+        .page-sub{
+            color:var(--text-light);
+            font-size:13.5px;
+        }
+        .date-picker{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            background:#fff;
+            border:1px solid var(--border);
+            border-radius:10px;
+            padding:9px 16px;
+            font-size:13px;
+            font-weight:600;
+            color:var(--text-dark);
+            cursor:pointer;
+            box-shadow:0 1px 2px rgba(20,20,43,.03);
+        }
+
+        /* ===== Stat cards ===== */
+        .stats-grid{
+            display:grid;
+            grid-template-columns:repeat(5,1fr);
+            gap:18px;
+            margin-bottom:22px;
+        }
+        .stat-card{
+            background:#fff;
+            border:1px solid var(--border);
+            border-radius:16px;
+            padding:20px;
+        }
+        .stat-icon{
+            width:42px;height:42px;
+            border-radius:11px;
+            display:flex;align-items:center;justify-content:center;
+            margin-bottom:14px;
+        }
+        .stat-label{
+            font-size:12.5px;
+            color:var(--text-mid);
+            margin-bottom:6px;
+        }
+        .stat-value{
+            font-size:23px;
+            font-weight:700;
+            color:var(--text-dark);
+            margin-bottom:10px;
+        }
+        .stat-delta{
+            font-size:12px;
+            color:var(--green);
+            font-weight:600;
+        }
+        .stat-delta span{color:var(--text-light);font-weight:500;}
+
+        /* ===== Charts row ===== */
+        .charts-row{
+            display:grid;
+            grid-template-columns:1.65fr 1fr;
+            gap:18px;
+            margin-bottom:22px;
+        }
+        .panel{
+            background:#fff;
+            border:1px solid var(--border);
+            border-radius:16px;
+            padding:22px;
+        }
+        .panel-head{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:6px;
+        }
+        .panel-title{
+            font-size:15.5px;
+            font-weight:700;
+            color:var(--text-dark);
+        }
+        .filter-pill{
+            display:flex;align-items:center;gap:6px;
+            border:1px solid var(--border);
+            border-radius:8px;
+            padding:6px 12px;
+            font-size:12.5px;
+            font-weight:600;
+            color:var(--text-mid);
+            cursor:pointer;
+            background:#fff;
+        }
+        .legend-dot{
+            display:inline-flex;align-items:center;gap:7px;
+            font-size:12.5px;
+            color:var(--text-mid);
+            margin:8px 0 6px 0;
+        }
+        .dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+
+        /* donut legend list */
+        .donut-wrap{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:10px;
+            margin-top:8px;
+        }
+        .donut-legend{flex:1;}
+        .donut-legend-row{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            padding:10px 0;
+            border-bottom:1px solid #f4f4f8;
+            font-size:13px;
+        }
+        .donut-legend-row:last-child{border-bottom:none;}
+        .donut-legend-left{display:flex;align-items:center;gap:9px;color:var(--text-dark);font-weight:500;}
+        .donut-legend-val{color:var(--text-mid);font-weight:600;font-size:12.5px;}
+
+        /* ===== Tables row ===== */
+        .tables-row{
+            display:grid;
+            grid-template-columns:1.65fr 1fr;
+            gap:18px;
+        }
+        .view-all{color:var(--purple);font-size:12.5px;font-weight:600;}
+
+        table{width:100%;border-collapse:collapse;margin-top:12px;}
+        th{
+            text-align:left;
+            font-size:10.5px;
+            letter-spacing:.05em;
+            color:var(--text-light);
+            font-weight:700;
+            padding:0 10px 10px 10px;
+            border-bottom:1px solid var(--border);
+        }
+        td{
+            padding:12px 10px;
+            border-bottom:1px solid #f5f5fa;
+            font-size:13px;
+            color:var(--text-dark);
+            vertical-align:middle;
+        }
+        tr:last-child td{border-bottom:none;}
+        .guest-cell{display:flex;align-items:center;gap:9px;}
+        .guest-avatar{width:26px;height:26px;border-radius:50%;object-fit:cover;}
+        .status-pill{
+            display:inline-block;
+            padding:4px 11px;
+            border-radius:20px;
+            font-size:11.5px;
+            font-weight:600;
+        }
+        .status-confirmed{background:var(--green-light);color:var(--green);}
+        .status-pending{background:var(--orange-light);color:#d97706;}
+        .status-cancelled{background:var(--red-light);color:var(--red);}
+        .status-completed{background:var(--blue-light);color:var(--blue);}
+        .amount-cell{font-weight:600;}
+
+        /* Top performing hotels */
+        .hotel-row{
+            display:flex;
+            align-items:center;
+            gap:12px;
+            padding:13px 0;
+            border-bottom:1px solid #f5f5fa;
+        }
+        .hotel-row:last-child{border-bottom:none;}
+        .hotel-rank{
+            width:20px;height:20px;
+            border-radius:50%;
+            background:var(--orange);
+            color:#fff;
+            font-size:11px;
+            font-weight:700;
+            display:flex;align-items:center;justify-content:center;
+            flex-shrink:0;
+        }
+        .hotel-rank.rank-2{background:#9ca3af;}
+        .hotel-rank.rank-3{background:#c98a4b;}
+        .hotel-rank.rank-4{background:#a0a4ff;}
+        .hotel-thumb{width:44px;height:44px;border-radius:10px;object-fit:cover;flex-shrink:0;}
+        .hotel-info{flex:1;min-width:0;}
+        .hotel-name{font-size:13.5px;font-weight:700;color:var(--text-dark);}
+        .hotel-loc{font-size:12px;color:var(--text-light);}
+        .hotel-stats{text-align:right;font-size:12.5px;}
+        .hotel-bookings{color:var(--text-mid);}
+        .hotel-revenue{color:var(--text-dark);font-weight:700;}
+
+        footer{
+            text-align:center;
+            padding:22px 0 30px 0;
+            color:var(--text-light);
+            font-size:12px;
+            display:flex;
+            justify-content:space-between;
+            padding-left:28px;
+            padding-right:28px;
+        }
+
+        @media (max-width:1200px){
+            .stats-grid{grid-template-columns:repeat(3,1fr);}
+            .charts-row,.tables-row{grid-template-columns:1fr;}
+        }
+        @media (max-width:800px){
+            .sidebar{display:none;}
+            .main{margin-left:0;}
+            .stats-grid{grid-template-columns:repeat(2,1fr);}
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+
+    <!-- ============ SIDEBAR ============ -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 7h-3V6a3 3 0 0 0-3-3H10a3 3 0 0 0-3 3v1H4a1 1 0 0 0-1 1v10a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3V8a1 1 0 0 0-1-1ZM9 6a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1H9V6Z" fill="currentColor"/></svg>
+            </div>
+            <div>
+                <div class="brand-name">LuxeStay</div>
+                <div class="brand-sub">Admin Panel</div>
+            </div>
+        </div>
+
+        <div class="nav-item active">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg>
+            Dashboard
+        </div>
+
+        <div class="nav-section-title">MANAGEMENT</div>
+        <div class="nav-item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h.01M9 13h.01M9 17h.01M15 9h.01M15 13h.01M15 17h.01"/></svg>Hotels</div>
+        <div class="nav-item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Bookings</div>
+        <div class="nav-item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Users</div>
+        <div class="nav-item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Rooms</div>
+        <div class="nav-item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>Reviews</div>
+        <div class="nav-item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg>Payments</div>
+
+        <div class="nav-section-title">CONTENT</div>
+        <div class="nav-item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></svg>Destinations</div>
+        <div class="nav-item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V8H6a2 2 0 0 1 0-4h12v4"/><path d="M4 6v12a2 2 0 0 0 2 2h14v-4"/><path d="M18 14h.01"/></svg>Offers &amp; Discounts</div>
+        <div class="nav-item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>Pages</div>
+        <div class="nav-item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Blog Posts</div>
+
+        <div class="nav-section-title">SYSTEM</div>
+        <div class="nav-item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-6 4 3 5-8"/></svg>Reports</div>
+        <div class="nav-item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</div>
+        <div class="nav-item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Activity Logs</div>
+
+        <div class="sidebar-help">
+            <div class="sidebar-help-icon">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+            </div>
+            <div class="sidebar-help-title">Need Help?</div>
+            <div class="sidebar-help-sub">Contact our support</div>
+            <button class="btn-support">Get Support</button>
+        </div>
+    </aside>
+
+    <!-- ============ MAIN ============ -->
+    <div class="main">
+
+        <!-- Topbar -->
+        <div class="topbar">
+            <div class="search-box">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                <input type="text" placeholder="Search anything...">
+                <kbd>⌘ K</kbd>
+            </div>
+            <div class="topbar-right">
+                <div class="icon-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    <span class="badge">3</span>
+                </div>
+                <div class="icon-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </div>
+                <div class="user-chip">
+                    <img class="user-avatar" src="https://i.pravatar.cc/80?img=13" alt="Admin User">
+                    <div>
+                        <div class="user-name">Admin User</div>
+                        <div class="user-role">Super Admin</div>
+                    </div>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+
+            <div class="page-header">
+                <div>
+                    <div class="page-title">Dashboard</div>
+                    <div class="page-sub">Welcome back! Here's what's happening with your platform.</div>
+                </div>
+                <div class="date-picker">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                    May 20, 2025 - May 26, 2025
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                </div>
+            </div>
+
+            <!-- Stat cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:var(--purple-light);color:var(--purple);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7h-3V6a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3v1H4a1 1 0 0 0-1 1v10a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3V8a1 1 0 0 0-1-1Z"/></svg>
+                    </div>
+                    <div class="stat-label">Total Bookings</div>
+                    <div class="stat-value">1,248</div>
+                    <div class="stat-delta">↑ 12.5% <span>vs last week</span></div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:var(--blue-light);color:var(--blue);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    </div>
+                    <div class="stat-label">Total Revenue</div>
+                    <div class="stat-value">$98,765</div>
+                    <div class="stat-delta">↑ 18.2% <span>vs last week</span></div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:var(--green-light);color:var(--green);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h.01M9 13h.01M9 17h.01M15 9h.01M15 13h.01M15 17h.01"/></svg>
+                    </div>
+                    <div class="stat-label">Total Hotels</div>
+                    <div class="stat-value">156</div>
+                    <div class="stat-delta">↑ 8 <span>new this week</span></div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:var(--orange-light);color:var(--orange);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <div class="stat-label">Total Users</div>
+                    <div class="stat-value">12,543</div>
+                    <div class="stat-delta">↑ 15.3% <span>vs last week</span></div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:var(--pink-light);color:var(--pink);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    </div>
+                    <div class="stat-label">Active Rooms</div>
+                    <div class="stat-value">2,345</div>
+                    <div class="stat-delta">↑ 9.5% <span>vs last week</span></div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="charts-row">
+                <div class="panel">
+                    <div class="panel-head">
+                        <div class="panel-title">Bookings Overview</div>
+                        <div class="filter-pill">This Week <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+                    </div>
+                    <div class="legend-dot"><span class="dot" style="background:var(--purple);"></span>Bookings</div>
+                    <svg id="lineChart" viewBox="0 0 720 300" width="100%" height="300"></svg>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-head">
+                        <div class="panel-title">Bookings by Status</div>
+                        <div class="filter-pill">This Week <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+                    </div>
+                    <div class="donut-wrap">
+                        <svg id="donutChart" viewBox="0 0 200 200" width="200" height="200"></svg>
+                        <div class="donut-legend">
+                            <div class="donut-legend-row">
+                                <div class="donut-legend-left"><span class="dot" style="background:var(--blue);"></span>Confirmed</div>
+                                <div class="donut-legend-val">682 (54.6%)</div>
+                            </div>
+                            <div class="donut-legend-row">
+                                <div class="donut-legend-left"><span class="dot" style="background:var(--orange);"></span>Pending</div>
+                                <div class="donut-legend-val">286 (22.9%)</div>
+                            </div>
+                            <div class="donut-legend-row">
+                                <div class="donut-legend-left"><span class="dot" style="background:var(--red);"></span>Cancelled</div>
+                                <div class="donut-legend-val">180 (14.4%)</div>
+                            </div>
+                            <div class="donut-legend-row">
+                                <div class="donut-legend-left"><span class="dot" style="background:var(--green);"></span>Completed</div>
+                                <div class="donut-legend-val">100 (8.0%)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tables -->
+            <div class="tables-row">
+                <div class="panel">
+                    <div class="panel-head">
+                        <div class="panel-title">Recent Bookings</div>
+                        <a class="view-all" href="#">View All ›</a>
+                    </div>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>BOOKING ID</th><th>GUEST</th><th>HOTEL</th><th>CHECK-IN</th><th>STATUS</th><th>AMOUNT</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>#BK1258</td>
+                            <td><div class="guest-cell"><img class="guest-avatar" src="https://i.pravatar.cc/60?img=12" alt="">John Smith</div></td>
+                            <td>Lagoon Bliss Resort</td>
+                            <td>May 24, 2025</td>
+                            <td><span class="status-pill status-confirmed">Confirmed</span></td>
+                            <td class="amount-cell">$320</td>
+                        </tr>
+                        <tr>
+                            <td>#BK1257</td>
+                            <td><div class="guest-cell"><img class="guest-avatar" src="https://i.pravatar.cc/60?img=32" alt="">Emma Johnson</div></td>
+                            <td>Oceanfront Paradise</td>
+                            <td>May 24, 2025</td>
+                            <td><span class="status-pill status-pending">Pending</span></td>
+                            <td class="amount-cell">$240</td>
+                        </tr>
+                        <tr>
+                            <td>#BK1256</td>
+                            <td><div class="guest-cell"><img class="guest-avatar" src="https://i.pravatar.cc/60?img=51" alt="">Michael Brown</div></td>
+                            <td>Santorini View Hotel</td>
+                            <td>May 23, 2025</td>
+                            <td><span class="status-pill status-confirmed">Confirmed</span></td>
+                            <td class="amount-cell">$210</td>
+                        </tr>
+                        <tr>
+                            <td>#BK1255</td>
+                            <td><div class="guest-cell"><img class="guest-avatar" src="https://i.pravatar.cc/60?img=47" alt="">Sarah Davis</div></td>
+                            <td>Alpine Serenity Lodge</td>
+                            <td>May 23, 2025</td>
+                            <td><span class="status-pill status-cancelled">Cancelled</span></td>
+                            <td class="amount-cell">$280</td>
+                        </tr>
+                        <tr>
+                            <td>#BK1254</td>
+                            <td><div class="guest-cell"><img class="guest-avatar" src="https://i.pravatar.cc/60?img=14" alt="">David Wilson</div></td>
+                            <td>Lagoon Bliss Resort</td>
+                            <td>May 22, 2025</td>
+                            <td><span class="status-pill status-completed">Completed</span></td>
+                            <td class="amount-cell">$320</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-head">
+                        <div class="panel-title">Top Performing Hotels</div>
+                        <a class="view-all" href="#">View All ›</a>
+                    </div>
+
+                    <div class="hotel-row">
+                        <div class="hotel-rank">1</div>
+                        <img class="hotel-thumb" src="https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=100&h=100&fit=crop" alt="">
+                        <div class="hotel-info">
+                            <div class="hotel-name">Lagoon Bliss Resort</div>
+                            <div class="hotel-loc">Maldives</div>
+                        </div>
+                        <div class="hotel-stats">
+                            <div class="hotel-bookings">Bookings<br>320</div>
+                        </div>
+                        <div class="hotel-stats">
+                            <div class="hotel-revenue">Revenue<br>$102,400</div>
+                        </div>
+                    </div>
+
+                    <div class="hotel-row">
+                        <div class="hotel-rank rank-2">2</div>
+                        <img class="hotel-thumb" src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=100&h=100&fit=crop" alt="">
+                        <div class="hotel-info">
+                            <div class="hotel-name">Oceanfront Paradise</div>
+                            <div class="hotel-loc">Bali, Indonesia</div>
+                        </div>
+                        <div class="hotel-stats">
+                            <div class="hotel-bookings">Bookings<br>280</div>
+                        </div>
+                        <div class="hotel-stats">
+                            <div class="hotel-revenue">Revenue<br>$67,200</div>
+                        </div>
+                    </div>
+
+                    <div class="hotel-row">
+                        <div class="hotel-rank rank-3">3</div>
+                        <img class="hotel-thumb" src="https://images.unsplash.com/photo-1533105079780-92b9be482077?w=100&h=100&fit=crop" alt="">
+                        <div class="hotel-info">
+                            <div class="hotel-name">Santorini View Hotel</div>
+                            <div class="hotel-loc">Santorini, Greece</div>
+                        </div>
+                        <div class="hotel-stats">
+                            <div class="hotel-bookings">Bookings<br>245</div>
+                        </div>
+                        <div class="hotel-stats">
+                            <div class="hotel-revenue">Revenue<br>$51,450</div>
+                        </div>
+                    </div>
+
+                    <div class="hotel-row">
+                        <div class="hotel-rank rank-4">4</div>
+                        <img class="hotel-thumb" src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=100&h=100&fit=crop&sat=-100" alt="">
+                        <div class="hotel-info">
+                            <div class="hotel-name">Alpine Serenity Lodge</div>
+                            <div class="hotel-loc">Swiss Alps, Switzerland</div>
+                        </div>
+                        <div class="hotel-stats">
+                            <div class="hotel-bookings">Bookings<br>210</div>
+                        </div>
+                        <div class="hotel-stats">
+                            <div class="hotel-revenue">Revenue<br>$58,800</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <footer>
+            <span>© 2025 TravelStay. All rights reserved.</span>
+            <span>v2.1.0</span>
+        </footer>
+    </div>
+</div>
+
+<script>
+    // ============ Line Chart (Bookings Overview) ============
+    (function(){
+        const svg = document.getElementById('lineChart');
+        const w = 720, h = 300;
+        const padL = 40, padR = 10, padT = 10, padB = 30;
+        const days = ['May 20','May 21','May 22','May 23','May 24','May 25','May 26'];
+        const values = [55, 140, 130, 195, 175, 215, 95];
+        const maxY = 300;
+        const stepX = (w - padL - padR) / (days.length - 1);
+
+        function xFor(i){ return padL + i*stepX; }
+        function yFor(v){ return padT + (h - padT - padB) * (1 - v/maxY); }
+
+        // gridlines + y labels
+        const yTicks = [0,50,100,150,200,250,300];
+        let gridSvg = '';
+        yTicks.forEach(t=>{
+            const y = yFor(t);
+            gridSvg += `<line x1="${padL}" y1="${y}" x2="${w-padR}" y2="${y}" stroke="#eef0f6" stroke-width="1" stroke-dasharray="${t===0?'0':'4,4'}"/>`;
+            gridSvg += `<text x="${padL-12}" y="${y+4}" text-anchor="end" font-size="11" fill="#9aa1b1">${t}</text>`;
+        });
+
+        // x labels
+        let xLabelSvg = '';
+        days.forEach((d,i)=>{
+            xLabelSvg += `<text x="${xFor(i)}" y="${h-8}" text-anchor="middle" font-size="11" fill="#9aa1b1">${d}</text>`;
+        });
+
+        // smooth path (catmull-rom to bezier)
+        function buildSmoothPath(pts){
+            if(pts.length<2) return '';
+            let d = `M ${pts[0][0]} ${pts[0][1]}`;
+            for(let i=0;i<pts.length-1;i++){
+                const p0 = pts[i-1] || pts[i];
+                const p1 = pts[i];
+                const p2 = pts[i+1];
+                const p3 = pts[i+2] || p2;
+                const cp1x = p1[0] + (p2[0]-p0[0])/6;
+                const cp1y = p1[1] + (p2[1]-p0[1])/6;
+                const cp2x = p2[0] - (p3[0]-p1[0])/6;
+                const cp2y = p2[1] - (p3[1]-p1[1])/6;
+                d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2[0]} ${p2[1]}`;
+            }
+            return d;
+        }
+
+        const points = values.map((v,i)=>[xFor(i), yFor(v)]);
+        const linePath = buildSmoothPath(points);
+        const areaPath = linePath + ` L ${xFor(days.length-1)} ${h-padB} L ${xFor(0)} ${h-padB} Z`;
+
+        let dotsSvg = '';
+        points.forEach(p=>{
+            dotsSvg += `<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="#fff" stroke="#6c5ce7" stroke-width="2.5"/>`;
+        });
+
+        svg.innerHTML = `
+    <defs>
+      <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#6c5ce7" stop-opacity="0.28"/>
+        <stop offset="100%" stop-color="#6c5ce7" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    ${gridSvg}
+    ${xLabelSvg}
+    <path d="${areaPath}" fill="url(#areaGrad)" stroke="none"/>
+    <path d="${linePath}" fill="none" stroke="#6c5ce7" stroke-width="2.5" stroke-linecap="round"/>
+    ${dotsSvg}
+  `;
+    })();
+
+    // ============ Donut Chart (Bookings by Status) ============
+    (function(){
+        const svg = document.getElementById('donutChart');
+        const cx=100, cy=100, r=78, stroke=26;
+        const data = [
+            {value:54.6, color:'#3b82f6'},
+            {value:22.9, color:'#f59e0b'},
+            {value:14.4, color:'#ef4444'},
+            {value:8.0,  color:'#16a34a'}
+        ];
+        const circumference = 2*Math.PI*r;
+        let offsetAcc = 0;
+        let arcs = '';
+        data.forEach(seg=>{
+            const len = circumference * (seg.value/100);
+            const gap = circumference - len;
+            const rotation = (offsetAcc/100) * 360 - 90;
+            arcs += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${seg.color}"
+      stroke-width="${stroke}" stroke-dasharray="${len} ${gap}"
+      transform="rotate(${rotation} ${cx} ${cy})" stroke-linecap="butt"/>`;
+            offsetAcc += seg.value;
+        });
+        svg.innerHTML = arcs;
+    })();
+</script>
+</body>
+</html>
