@@ -24,7 +24,6 @@ public class BookingController {
 
 
 
-
     @GetMapping("/add")
     public String booking(Model model) {
         model.addAttribute("booking", new Booking());
