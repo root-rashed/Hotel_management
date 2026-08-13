@@ -9,13 +9,15 @@ import static org.springframework.security.authorization.AuthenticatedAuthorizat
 
 
 
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
 
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception
+    {
 
         // Authorized request
         http.authorizeHttpRequests(request ->
@@ -32,11 +34,11 @@ public class SecurityConfiguration {
                 .formLogin(Customizer.withDefaults())
                 .logout(Customizer.withDefaults())
                 .logout(Customizer.withDefaults())
-                .rememberMe(rm -> rm
-                        .tokenValiditySeconds(100)
-                        .rememberMeCookieName("remember-cookie"));
+                .rememberMe(Customizer.withDefaults());
 
+        return http.build();
 
+    }
 
 
 
@@ -61,18 +63,9 @@ public class SecurityConfiguration {
 //                        .logoutSuccessUrl("/login?logout=true")
 //                        .clearAuthentication(true))
                 // Remember me customization
-        return http.build();
-    }
 
-
-
-
-
-
-
-
-
-
+//        return http.build();
+//    }
 
 
     //    @Bean
